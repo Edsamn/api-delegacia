@@ -1,0 +1,53 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Armas {
+  id String @id @default(uuid()) @db.Uuid
+  tipo String @db.VarChar(50)
+  apreendida Boolean @default(false)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  crimes Crimes[]
+  @@map("arma")
+}
+
+model Criminosos {
+  id String @id @default(uuid()) @db.Uuid
+  nome String @db.VarChar(50)
+  cpf String @db.VarChar(15)
+
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  crimes Crimes[]
+  @@map("criminosos")
+}
+
+model Crimes {
+  id String @id @default(uuid()) @db.Uuid
+  data String
+  nome String @db.VarChar(50)
+  observacoes String? @db.VarChar(150)
+  
+  criminosoId String @db.Uuid @map("criminoso_id")
+  criminosos Criminosos @relation(fields: [criminosoId], references: [id])
+
+  armaId String @db.Uuid @map("arma_id")
+  armas Armas @relation(fields: [armaId], references: [id]) 
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  
+  @@map("crime")
+}
