@@ -68,6 +68,27 @@ class CrimeController {
       return res.status(500).json({success: false, msg: "ERROR Database."});
     }
   }
+
+  public async show(req: Request, res: Response) {
+    const {id} = req.params;
+
+    try {
+      const crime = await db.crimes.findUnique({
+        where: {id},
+      });
+
+      if (!crime) {
+        return res.status(404).json({success: false, msg: "Crime não encontrado."});
+      }
+
+      if (crime) {
+        return res.status(200).json({success: true, msg: "Lista de armas do crime.", data: crime.armaId});
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({success: false, msg: "ERROR Database."});
+    }
+  }
 }
 
 export default CrimeController;

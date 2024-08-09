@@ -6,6 +6,7 @@ const routes = () => {
 
   router.get("/", controller.list);
   router.post("/", controller.create);
+  router.get("/:id", controller.show);
 
   return router;
 };
