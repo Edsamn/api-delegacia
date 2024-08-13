@@ -14,12 +14,13 @@ class CrimeController {
   }
 
   public async create(req: Request, res: Response) {
-    const {data, nome, observacoes, criminosoId, armaId} = req.body;
+    const {data, nome, observacoes, criminosoId} = req.body;
 
     try {
       const criminoso = await db.criminosos.findUnique({
         where: {id: criminosoId},
       });
+
       if (!criminoso) {
         return res.status(404).json({
           success: true,
@@ -27,39 +28,12 @@ class CrimeController {
         });
       }
 
-      const arma = await db.armas.findUnique({
-        where: {id: armaId},
-      });
-
-      if (!arma) {
-        return res.status(404).json({
-          success: true,
-          msg: "Arma não encontrada.",
-        });
-      }
-
-      if (arma.apreendida === true) {
-        return res.status(400).json({
-          success: true,
-          msg: "Arma já apreendida.",
-        });
-      }
-
       const crime = await db.crimes.create({
-        data: {data, nome, observacoes, criminosoId, armaId},
+        data: {data, nome, observacoes, criminosoId},
       });
 
       if (crime) {
-        await db.armas.update({
-          where: {id: armaId},
-          data: {apreendida: true},
-        });
-
-        return res.status(200).json({
-          success: true,
-          msg: "Crime Registrado.",
-          data: crime,
-        });
+        return res.status(200).json({success: true, msg: "Crime registrado.", data: crime});
       }
 
       return res.status(500).json({success: false, msg: "Crime não registrado."});
@@ -75,6 +49,7 @@ class CrimeController {
     try {
       const crime = await db.crimes.findUnique({
         where: {id},
+        include: {armas: true},
       });
 
       if (!crime) {
@@ -82,7 +57,7 @@ class CrimeController {
       }
 
       if (crime) {
-        return res.status(200).json({success: true, msg: "Lista de armas do crime.", data: crime.armaId});
+        return res.status(200).json({success: true, msg: "Lista de armas do crime.", data: crime});
       }
     } catch (error) {
       console.log(error);
