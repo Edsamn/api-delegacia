@@ -14,7 +14,7 @@ class ArmaController {
   }
 
   public async create(req: Request, res: Response) {
-    const {tipo, apreendida, crimeId} = req.body;
+    const {tipo, crimeId} = req.body;
 
     try {
       const crime = await db.crimes.findUnique({
@@ -28,30 +28,25 @@ class ArmaController {
         });
       }
 
-      if (crime) {
-        const arma = await db.armas.create({
-          data: {tipo, apreendida, crimeId},
+      if (!tipo || !crimeId) {
+        return res.status(40).json({
+          success: true,
+          msg: "Preencher todos os campos.",
         });
+      }
 
-        if (arma.apreendida === true) {
-          return res.status(400).json({
-            success: true,
-            msg: "Arma já apreendida.",
-          });
-        }
+      const arma = await db.armas.create({
+        data: {tipo, crimeId},
+      });
 
+      if (crime) {
         if (arma) {
           return res.status(200).json({
             success: true,
-            msg: "Arma Registrada.",
+            msg: "Arma registrada no crime.",
             data: arma,
           });
         }
-
-        return res.status(200).json({
-          success: true,
-          msg: "Arma Registrada no crime.",
-        });
       }
 
       return res.status(500).json({success: false, msg: "Arma não registrada."});

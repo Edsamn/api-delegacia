@@ -32,6 +32,13 @@ class CrimeController {
         data: {data, nome, observacoes, criminosoId},
       });
 
+      if (!data || !nome || !criminosoId) {
+        return res.status(40).json({
+          success: true,
+          msg: "Preencher todos os campos.",
+        });
+      }
+
       if (crime) {
         return res.status(200).json({success: true, msg: "Crime registrado.", data: crime});
       }

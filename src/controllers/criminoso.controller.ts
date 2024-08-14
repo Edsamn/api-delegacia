@@ -21,10 +21,17 @@ class CriminosoController {
         data: {nome, cpf},
       });
 
+      if (!nome || !cpf) {
+        return res.status(40).json({
+          success: true,
+          msg: "Preencher todos os campos.",
+        });
+      }
+
       if (criminoso) {
         return res.status(200).json({
           success: true,
-          msg: "Criminoso Registrado.",
+          msg: "Criminoso registrado.",
           data: criminoso,
         });
       }

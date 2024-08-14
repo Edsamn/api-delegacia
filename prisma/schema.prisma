@@ -12,14 +12,13 @@ datasource db {
 model Armas {
   id String @id @default(uuid()) @db.Uuid
   tipo String @db.VarChar(50)
-  apreendida Boolean @default(true)
   crimeId String @db.Uuid @map("crime_id")
   crimes Crimes @relation(fields: [crimeId], references: [id]) 
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("arma")
+  @@map("armas")
 }
 
 model Criminosos {
@@ -40,14 +39,13 @@ model Crimes {
   data String
   nome String @db.VarChar(50)
   observacoes String? @db.VarChar(150)
-  
   criminosoId String @db.Uuid @map("criminoso_id")
   criminosos Criminosos @relation(fields: [criminosoId], references: [id])
-  
+
   armas Armas[] 
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   
-  @@map("crime")
+  @@map("crimes")
 }
