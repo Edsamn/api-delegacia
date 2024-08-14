@@ -35,11 +35,11 @@ class ArmaController {
         });
       }
 
-      const arma = await db.armas.create({
-        data: {tipo, crimeId},
-      });
-
       if (crime) {
+        const arma = await db.armas.create({
+          data: {tipo, crimeId},
+        });
+
         if (arma) {
           return res.status(200).json({
             success: true,
